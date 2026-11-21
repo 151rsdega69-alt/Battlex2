@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BattleX Admin</title>
+<style>
+:root{--bg:#0a0a0a;--card:#141414;--card2:#1c1c1c;--line:#3a2f08;--gold:#ffc400;--txt:#fff;--mut:#9a9a9a;--green:#22c55e;--red:#ef4444}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+.btn{background:linear-gradient(135deg,#ffd633,#e0a400);color:#000;font-weight:800;border-radius:9px;padding:9px 16px;font-size:13px}
+.btn[disabled]{opacity:.5}
+.btn.s{padding:6px 11px;font-size:12px}.btn.g{background:#222;color:#fff;font-weight:600}.btn.r{background:#3a0d0d;color:#ff7b7b}.btn.ok{background:#0d2e18;color:var(--green)}
+input,select{width:100%;background:#0d0d0d;border:1px solid #333;border-radius:9px;padding:10px 12px;color:#fff;font:inherit;font-size:14px}
+input[type=checkbox]{width:auto}
+input:focus,select:focus{outline:0;border-color:var(--gold)}
+label{display:block;font-size:12px;color:var(--mut);margin:12px 0 5px}
+#login{min-height:100vh;display:grid;place-items:center;padding:20px}
+.lc{width:100%;max-width:380px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px}
+.logo{width:64px;height:64px;border-radius:50%;border:3px solid var(--gold);display:grid;place-items:center;font-weight:900;font-style:italic;color:var(--gold);font-size:22px;margin:0 auto 14px;background:#1b1500}
+.lc h2{text-align:center}.lc p{color:var(--mut);font-size:13px;text-align:center;margin-top:4px}
+.err{color:var(--red);font-size:13px;margin-top:10px;min-height:18px;text-align:center}
+#shell{display:none;min-height:100vh}
+aside{position:fixed;left:0;top:0;bottom:0;width:220px;background:#0e0e0e;border-right:1px solid #1d1d1d;padding:18px 12px;display:flex;flex-direction:column;gap:4px}
+aside .brand{display:flex;gap:10px;align-items:center;padding:4px 8px 18px;font-weight:800}
+aside .brand .logo{width:38px;height:38px;font-size:13px;margin:0;border-width:2px}
+aside button{text-align:left;padding:11px 12px;border-radius:10px;color:#bbb;font-size:14px;font-weight:600;display:flex;justify-content:space-between;gap:8px}
+aside button.on{background:#1f1800;color:var(--gold)}
+aside .sp{flex:1}
+.bd{background:var(--gold);color:#000;font-size:11px;border-radius:9px;padding:1px 7px;font-weight:800}
+section{margin-left:220px;padding:26px 28px 60px;max-width:1200px}
+h1{font-size:22px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+.st{background:var(--card);border:1px solid #262626;border-radius:14px;padding:16px}.st small{color:var(--mut);font-size:12px}.st b{display:block;font-size:26px;margin-top:6px;color:var(--gold)}
+.tb{background:var(--card);border:1px solid #262626;border-radius:14px;overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
+th{text-align:left;color:var(--mut);font-weight:600;padding:12px 14px;border-bottom:1px solid #222;font-size:12px}
+td{padding:12px 14px;border-bottom:1px solid #1c1c1c;vertical-align:middle}
+tr:last-child td{border:0}
+.badge{font-size:10px;font-weight:800;padding:3px 8px;border-radius:10px;background:#2a2200;color:var(--gold)}.badge.l{background:#3a0d0d;color:#ff6b6b}.badge.f{background:#0d2e18;color:var(--green)}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.panel{background:var(--card);border:1px solid #262626;border-radius:14px;padding:18px;margin-bottom:16px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.note{color:var(--mut);font-size:12px;line-height:1.5}
+#ov{position:fixed;inset:0;background:#000b;display:none;place-items:center;z-index:20;padding:16px}
+#ov.show{display:grid}
+#md{background:#121212;border:1px solid var(--line);border-radius:18px;padding:22px;width:100%;max-width:520px;max-height:92vh;overflow:auto}
+#md h3{margin-bottom:4px}
+.chk{display:flex;gap:8px;align-items:center;margin-top:14px;font-size:13px;color:#ddd}
+#toast{position:fixed;top:18px;left:50%;transform:translateX(-50%);background:var(--gold);color:#000;font-weight:700;padding:10px 16px;border-radius:10px;font-size:13px;opacity:0;pointer-events:none;transition:.3s;z-index:50;max-width:90%;text-align:center}
+#toast.show{opacity:1}
+@media(max-width:760px){
+ aside{position:static;width:auto;flex-direction:row;overflow-x:auto;padding:10px;border-right:0;border-bottom:1px solid #1d1d1d}
+ aside .brand,aside .sp{display:none}aside button{white-space:nowrap}
+ section{margin:0;padding:18px 14px 50px}.two{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="login"><div class="lc">
+  <div class="logo">BX</div><h2>Admin Login</h2><p>BattleX control panel</p>
+  <label>Admin email</label><input id="lu" type="email" autocomplete="username" autocapitalize="none">
+  <label>Password</label><input id="lp" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+  <div class="err" id="le"></div>
+  <button class="btn" style="width:100%;padding:12px" onclick="doLogin()" id="lb">LOGIN</button>
+</div></div>
+
+<div id="shell">
+  <aside id="sb"></aside>
+  <section id="main"></section>
+</div>
+<div id="ov" onclick="if(event.target===this)closeM()"><div id="md"></div></div>
+<div id="toast"></div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,collection,doc,onSnapshot,setDoc,deleteDoc,getDoc,writeBatch} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const ADMIN_EMAIL='mitakarmakar933@gmail.com';
+const app=initializeApp({apiKey:"AIzaSyCpSOaNIW3M8cVEjcm9n7JfmWvQlsoy9R8",authDomain:"battlex-c542a.firebaseapp.com",projectId:"battlex-c542a",storageBucket:"battlex-c542a.firebasestorage.app",messagingSenderId:"111353356306",appId:"1:111353356306:web:b6691b01407362da9038cb"});
+const auth=getAuth(app),db=getFirestore(app);
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('show'),2800)}
+const errm=e=>(e&&(e.code||e.message))||'error';
+
+/* ---------- data ---------- */
+const GAMES={fire:{name:'Fire Arena',modes:['Full Map','Headshot Only','Squad Clash','Lone Wolf']},royale:{name:'Mobile Royale',modes:['Classic Solo','Classic Duo','Team Deathmatch']}};
+let T=[],DEP=[],RED=[],USERS=[],CFG={promo:'ADD ₹200 GET 250 COIN',minRedeem:50,auto:true};
+const ms=x=>x&&x.toMillis?x.toMillis():(+x||0);
+const status=t=>{const n=Date.now();return n<t.start?'up':n<t.start+25*60000?'live':'res'};
+const fdt=ts=>ts?new Date(ms(ts)).toLocaleString([],{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'–';
+const toLocalInput=ts=>{const d=new Date(ts-new Date().getTimezoneOffset()*60000);return d.toISOString().slice(0,16)};
+const pending=a=>a.filter(r=>r.status==='pending').length;
+const stBadge=s=>`<span class="badge ${s==='paid'||s==='approved'?'f':s==='rejected'?'l':''}">${esc(String(s).toUpperCase())}</span>`;
+
+/* ---------- auth ---------- */
+const lb=$('#lb');
+async function doLogin(){
+  const e=$('#le');e.textContent='';
+  const em=$('#lu').value.trim(),pw=$('#lp').value;
+  if(!em||!pw){e.textContent='Enter email and password';return}
+  lb.disabled=true;lb.textContent='Logging in...';
+  try{await signInWithEmailAndPassword(auth,em,pw)}
+  catch(err){e.textContent='Wrong email or password';lb.disabled=false;lb.textContent='LOGIN'}
+}
+function logout(){signOut(auth)}
+
+let subs=[];
+function sub(name,fn){
+  subs.push(onSnapshot(collection(db,name),s=>{fn(s.docs);refresh()},e=>toast('Load failed ('+name+'): '+errm(e))));
+}
+function startData(){
+  sub('tournaments',d=>T=d.map(x=>({...x.data(),id:x.id})));
+  sub('deposits',d=>DEP=d.map(x=>({...x.data(),id:x.id})).sort((a,b)=>ms(b.ts)-ms(a.ts)));
+  sub('redeems',d=>RED=d.map(x=>({...x.data(),id:x.id})).sort((a,b)=>ms(b.ts)-ms(a.ts)));
+  sub('users',d=>USERS=d.map(x=>({...x.data(),uid:x.id})));
+  subs.push(onSnapshot(doc(db,'settings','app'),s=>{CFG=Object.assign({promo:'ADD ₹200 GET 250 COIN',minRedeem:50,auto:true},s.data()||{});refresh()},()=>{}));
+}
+onAuthStateChanged(auth,u=>{
+  subs.forEach(f=>f());subs=[];
+  if(u&&u.email&&u.email.toLowerCase()===ADMIN_EMAIL.toLowerCase()){
+    $('#login').style.display='none';$('#shell').style.display='block';
+    startData();go('dash');
+  }else{
+    if(u){signOut(auth);$('#le').textContent='This account is not admin'}
+    $('#shell').style.display='none';$('#login').style.display='grid';
+    lb.disabled=false;lb.textContent='LOGIN';
+  }
+});
+
+/* ---------- navigation ---------- */
+let V='dash';
+function go(v){V=v;render()}
+function refresh(){
+  if($('#shell').style.display!=='block')return;
+  const a=document.activeElement;
+  if(a&&['INPUT','SELECT'].includes(a.tagName)&&a.closest('#main'))return;
+  render();
+}
+function render(){
+  const nb=(k,l,b)=>`<button class="${V===k?'on':''}" onclick="go('${k}')"><span>${l}</span>${b?`<span class="bd">${b}</span>`:''}</button>`;
+  $('#sb').innerHTML=`<div class="brand"><div class="logo">BX</div>Admin</div>`+nb('dash','Dashboard')+nb('tour','Tournaments')+nb('dep','Deposits',pending(DEP))+nb('redeem','Redeems',pending(RED))+nb('players','Players')+nb('set','Settings')+`<div class="sp"></div><button onclick="logout()">Logout</button>`;
+  $('#main').innerHTML=VIEW[V]();
+}
+
+/* ---------- views ---------- */
+const VIEW={
+dash(){
+  const live=T.filter(t=>status(t)==='live').length,up=T.filter(t=>status(t)==='up').length;
+  const coins=USERS.reduce((s,u)=>s+(u.dep||0)+(u.win||0)+(u.bonus||0),0);
+  return `<h1>Dashboard</h1>
+  <div class="grid">
+   <div class="st"><small>Players</small><b>${USERS.length}</b></div>
+   <div class="st"><small>Tournaments</small><b>${T.length}</b></div>
+   <div class="st"><small>Live now</small><b>${live}</b></div>
+   <div class="st"><small>Upcoming</small><b>${up}</b></div>
+   <div class="st"><small>Pending deposits</small><b>${pending(DEP)}</b></div>
+   <div class="st"><small>Pending redeems</small><b>${pending(RED)}</b></div>
+   <div class="st"><small>Coins in wallets</small><b>${Math.floor(coins)}</b></div>
+  </div>
+  <div class="panel"><b>Quick start</b><p class="note" style="margin-top:8px">1) <b>Tournaments</b> → New tournament: game, mode, fee, prize, time, Room ID &amp; password.<br>2) Players see it in the app lobby instantly.<br>3) After the match: <b>Result</b> → enter winner names (exact player name) and pay the prize.<br>4) <b>Deposits</b>: check UTR in your bank, then Approve to add coins.<br>5) <b>Redeems</b>: send UPI money yourself, then Mark paid.</p></div>`;
+},
+tour(){
+  const rows=[...T].sort((a,b)=>b.start-a.start).map(t=>{
+    const s=status(t),b=s==='live'?'<span class="badge l">● LIVE</span>':s==='up'?'<span class="badge">UPCOMING</span>':'<span class="badge f">FINISHED</span>';
+    const g=GAMES[t.gk]||{name:t.gk,modes:[]};
+    const joined=USERS.filter(u=>u.joined&&u.joined[t.id]).length;
+    return `<tr><td><b>${esc(t.title)}</b><div class="note">${esc(g.name)} · ${esc(g.modes[t.mi]||'')}</div></td><td>${fdt(t.start)}</td><td>${t.fee||'FREE'}</td><td>${t.prize}</td><td>${t.filled}/${t.slots}<div class="note">real joined: ${joined}</div></td><td>${esc(t.room||'–')} / ${esc(t.pass||'–')}</td><td>${b}${t.paid?'<div class="note">prize paid</div>':''}</td>
+    <td><div class="acts"><button class="btn s g" onclick="tForm('${t.id}')">Edit</button><button class="btn s ok" onclick="resForm('${t.id}')">Result</button><button class="btn s r" onclick="tDel('${t.id}')">Delete</button></div></td></tr>`}).join('');
+  return `<h1>Tournaments <button class="btn" onclick="tForm()">＋ New tournament</button></h1>
+  <div class="tb"><table><tr><th>Title</th><th>Start</th><th>Fee</th><th>Prize</th><th>Slots</th><th>Room / Pass</th><th>Status</th><th></th></tr>${rows||'<tr><td colspan="8" class="note" style="text-align:center;padding:30px">No tournaments yet</td></tr>'}</table></div>`;
+},
+dep(){
+  const rows=DEP.map(r=>`<tr><td><b>${esc(r.name)}</b></td><td>${r.coins}</td><td>₹${r.inr}</td><td>${esc(r.utr)}</td><td>${fdt(r.ts)}</td><td>${stBadge(r.status)}</td>
+   <td>${r.status==='pending'?`<div class="acts"><button class="btn s ok" onclick="dpAct('${r.id}','approved')">Approve</button><button class="btn s r" onclick="dpAct('${r.id}','rejected')">Reject</button></div>`:''}</td></tr>`).join('');
+  return `<h1>Deposit requests</h1><div class="tb"><table><tr><th>Player</th><th>Coins</th><th>Paid</th><th>UTR</th><th>Requested</th><th>Status</th><th></th></tr>${rows||'<tr><td colspan="7" class="note" style="text-align:center;padding:30px">No requests</td></tr>'}</table></div>
+  <p class="note" style="margin-top:12px">Check the UTR in your bank/UPI app first. “Approve” adds the coins to the player's Deposited wallet.</p>`;
+},
+redeem(){
+  const rows=RED.map(r=>`<tr><td><b>${esc(r.name)}</b></td><td>${r.amt}</td><td>${esc(r.upi)}</td><td>${fdt(r.ts)}</td><td>${stBadge(r.status)}</td>
+   <td>${r.status==='pending'?`<div class="acts"><button class="btn s ok" onclick="rdAct('${r.id}','paid')">Mark paid</button><button class="btn s r" onclick="rdAct('${r.id}','rejected')">Reject</button></div>`:''}</td></tr>`).join('');
+  return `<h1>Redeem requests</h1><div class="tb"><table><tr><th>Player</th><th>Coins</th><th>UPI ID</th><th>Requested</th><th>Status</th><th></th></tr>${rows||'<tr><td colspan="6" class="note" style="text-align:center;padding:30px">No requests</td></tr>'}</table></div>
+  <p class="note" style="margin-top:12px">“Mark paid” – first send the money to the UPI ID yourself. The coins are then deducted from the player's winnings. “Reject” changes nothing in the wallet.</p>`;
+},
+players(){
+  const rows=[...USERS].sort((a,b)=>(b.win||0)-(a.win||0)).map(u=>`<tr><td><b>${esc(u.name)}</b><div class="note">${esc(u.fullName||'')}</div></td><td>${esc(u.id)}</td><td>${esc(u.phone||'–')}<div class="note">${esc(u.email||'')}</div></td><td>${u.dep||0}</td><td>${u.win||0}</td><td>${u.bonus||0}</td><td>${u.matches||0}</td><td>${u.wins||0}</td><td><button class="btn s" onclick="coinForm('${u.uid}')">Adjust coins</button></td></tr>`).join('');
+  return `<h1>Players (${USERS.length})</h1><div class="tb"><table style="min-width:820px"><tr><th>Name</th><th>ID</th><th>Contact</th><th>Deposited</th><th>Winning</th><th>Bonus</th><th>Matches</th><th>Wins</th><th></th></tr>${rows||'<tr><td colspan="9" class="note" style="text-align:center;padding:30px">No players yet</td></tr>'}</table></div>`;
+},
+set(){return `<h1>Settings</h1>
+  <div class="panel"><b>App settings</b>
+   <label>Promo strip text on home screen</label><input id="s1" value="${esc(CFG.promo)}">
+   <label>Minimum redeem (coins)</label><input id="s2" type="number" min="1" value="${CFG.minRedeem}">
+   <label>Auto-generated demo matches in the app</label><select id="s3"><option value="1" ${CFG.auto!==false?'selected':''}>Show</option><option value="0" ${CFG.auto===false?'selected':''}>Hide (only my tournaments)</option></select>
+   <br><button class="btn" onclick="saveSet()">Save settings</button></div>
+  <div class="panel"><b>Admin password</b><p class="note" style="margin-top:8px">Change it in Firebase Console → Authentication → Users → your admin email → Reset password.</p></div>`}
+};
+
+/* ---------- modal ---------- */
+const openM=h=>{$('#md').innerHTML=h;$('#ov').classList.add('show')};
+const closeM=()=>$('#ov').classList.remove('show');
+
+/* ---------- tournaments ---------- */
+function tForm(id){
+  const t=T.find(x=>x.id===id)||{gk:'fire',mi:0,title:'',fee:10,prize:100,slots:50,filled:0,start:Date.now()+3600000,room:'',pass:''};
+  openM(`<h3>${id?'Edit':'New'} tournament</h3>
+  <div class="two"><div><label>Game</label><select id="f_g" onchange="modeOpts()">${Object.entries(GAMES).map(([k,g])=>`<option value="${k}" ${t.gk===k?'selected':''}>${g.name}</option>`).join('')}</select></div>
+  <div><label>Mode</label><select id="f_m"></select></div></div>
+  <label>Title</label><input id="f_t" value="${esc(t.title)}" placeholder="e.g. Sunday Mega Match">
+  <div class="two"><div><label>Entry fee (0 = free)</label><input id="f_f" type="number" min="0" value="${t.fee}"></div><div><label>Prize pool</label><input id="f_p" type="number" min="0" value="${t.prize}"></div>
+  <div><label>Total slots</label><input id="f_s" type="number" min="2" value="${t.slots}"></div><div><label>Already filled</label><input id="f_fl" type="number" min="0" value="${t.filled}"></div></div>
+  <label>Start time</label><input id="f_d" type="datetime-local" value="${toLocalInput(t.start)}">
+  <div class="two"><div><label>Room ID</label><input id="f_r" value="${esc(t.room||'')}"></div><div><label>Room password</label><input id="f_pw" value="${esc(t.pass||'')}"></div></div>
+  <p class="note" style="margin-top:6px">Players see Room ID/password after joining, 15 min before start.</p><br>
+  <div class="acts"><button class="btn" onclick="tSave('${id||''}')">Save</button><button class="btn g" onclick="closeM()">Cancel</button></div>`);
+  window._mi=t.mi;modeOpts();
+}
+function modeOpts(){const g=$('#f_g').value;$('#f_m').innerHTML=GAMES[g].modes.map((m,i)=>`<option value="${i}" ${i===window._mi?'selected':''}>${m}</option>`).join('');window._mi=0}
+async function tSave(id){
+  const nid=id||'adm-'+Date.now();
+  const t={gk:$('#f_g').value,mi:+$('#f_m').value,title:$('#f_t').value.trim(),fee:Math.max(0,+$('#f_f').value||0),prize:Math.max(0,+$('#f_p').value||0),slots:Math.max(2,+$('#f_s').value||2),filled:Math.max(0,+$('#f_fl').value||0),start:new Date($('#f_d').value).getTime(),room:$('#f_r').value.trim(),pass:$('#f_pw').value.trim(),custom:1};
+  if(!t.title)return toast('Enter a title');if(isNaN(t.start))return toast('Pick a start time');if(t.filled>t.slots)return toast('Filled > slots');
+  try{await setDoc(doc(db,'tournaments',nid),t,{merge:true});closeM();toast('Saved')}
+  catch(e){toast('Save failed: '+errm(e))}
+}
+async function tDel(id){
+  if(!confirm('Delete this tournament?'))return;
+  try{await deleteDoc(doc(db,'tournaments',id));toast('Deleted')}catch(e){toast('Failed: '+errm(e))}
+}
+
+/* ---------- wallet helper (adds ops to a batch) ---------- */
+async function userOps(batch,uid,fields,hist,check){
+  const ref=doc(db,'users',uid),s=await getDoc(ref);
+  if(!s.exists())throw {code:'player-not-found'};
+  const d=s.data();
+  if(check)check(d);
+  const upd={};
+  for(const k in fields)upd[k]=Math.max(0,(d[k]||0)+fields[k]);
+  if(hist)upd.hist=[{...hist,ts:Date.now()},...(d.hist||[])].slice(0,60);
+  batch.update(ref,upd);
+}
+
+/* ---------- results ---------- */
+function resForm(id){
+  const t=T.find(x=>x.id===id),r=t.res||['','',''];
+  const sh=[.6,.25,.15].map(p=>Math.floor(t.prize*p));
+  openM(`<h3>Result – ${esc(t.title)}</h3><p class="note">Enter the exact player names. Prize split: 1st ${sh[0]}, 2nd ${sh[1]}, 3rd ${sh[2]} coins (60% / 25% / 15%).</p>
+  <label>🥇 1st</label><input id="r0" value="${esc(r[0]==='—'?'':r[0])}"><label>🥈 2nd</label><input id="r1" value="${esc(r[1]==='—'?'':r[1])}"><label>🥉 3rd</label><input id="r2" value="${esc(r[2]==='—'?'':r[2])}">
+  ${t.paid?'<p class="note" style="margin-top:12px">Prize already paid for this match. Saving only updates the shown names.</p>':'<label class="chk"><input type="checkbox" id="r_pay" checked> Pay prize coins to winners &amp; count matches</label>'}
+  <br><div class="acts"><button class="btn" onclick="resSave('${id}')">Publish result</button><button class="btn g" onclick="closeM()">Cancel</button></div>`);
+}
+async function resSave(id){
+  const t=T.find(x=>x.id===id);if(!t)return;
+  const names=[0,1,2].map(i=>$('#r'+i).value.trim());
+  const res=names.map(n=>n||'—');
+  const pay=!t.paid&&$('#r_pay')&&$('#r_pay').checked;
+  try{
+    const batch=writeBatch(db);
+    const miss=[];
+    if(pay){
+      const parts=USERS.filter(u=>u.joined&&u.joined[id]);
+      const shares=[.6,.25,.15].map(p=>Math.floor(t.prize*p));
+      const won={};
+      names.forEach((n,i)=>{
+        if(!n)return;
+        const u=parts.find(p=>String(p.name||'').toLowerCase()===n.toLowerCase());
+        if(!u){miss.push(n);return}
+        won[u.uid]=(won[u.uid]||0)+shares[i];
+      });
+      for(const u of parts){
+        const w=won[u.uid]||0;
+        await userOps(batch,u.uid,w?{matches:1,wins:1,win:w}:{matches:1},w?{t:'Won '+t.title,a:w}:null);
+      }
+    }
+    batch.set(doc(db,'tournaments',id),pay?{res,paid:true}:{res},{merge:true});
+    await batch.commit();
+    closeM();
+    toast(miss.length?'Result saved. No joined player named: '+miss.join(', '):pay?'Result saved & prizes paid':'Result saved');
+  }catch(e){toast('Failed: '+errm(e))}
+}
+
+/* ---------- deposits / redeems ---------- */
+async function dpAct(id,st){
+  const d=DEP.find(x=>x.id===id);if(!d||d.status!=='pending')return;
+  if(st==='approved'&&!confirm('Add '+d.coins+' coins to '+d.name+'?\nUTR: '+d.utr+' (₹'+d.inr+')\nCheck your bank first.'))return;
+  try{
+    const batch=writeBatch(db);
+    if(st==='approved')await userOps(batch,d.uid,{dep:d.coins},{t:'Coins added (deposit approved)',a:d.coins});
+    batch.update(doc(db,'deposits',id),{status:st});
+    await batch.commit();
+    toast(st==='approved'?'Approved, coins added':'Rejected');
+  }catch(e){toast('Failed: '+errm(e))}
+}
+async function rdAct(id,st){
+  const r=RED.find(x=>x.id===id);if(!r||r.status!=='pending')return;
+  if(st==='paid'&&!confirm('Mark paid? '+r.amt+' coins will be deducted from '+r.name+"'s winnings.\nSend ₹ to "+r.upi+' first.'))return;
+  try{
+    const batch=writeBatch(db);
+    if(st==='paid')await userOps(batch,r.uid,{win:-r.amt},{t:'Redeem paid to UPI',a:-r.amt},d=>{if((d.win||0)<r.amt)throw {code:'player has only '+(d.win||0)+' winning coins'}});
+    batch.update(doc(db,'redeems',id),{status:st});
+    await batch.commit();
+    toast(st==='paid'?'Marked as paid':'Rejected');
+  }catch(e){toast('Failed: '+errm(e))}
+}
+
+/* ---------- players ---------- */
+function coinForm(uid){
+  const u=USERS.find(x=>x.uid===uid);if(!u)return;
+  openM(`<h3>Adjust coins – ${esc(u.name)}</h3><p class="note">Use a negative number to deduct.</p>
+  <label>Wallet</label><select id="c_k"><option value="dep">Deposited (${u.dep||0})</option><option value="win">Winning (${u.win||0})</option><option value="bonus">Bonus (${u.bonus||0})</option></select>
+  <label>Amount</label><input id="c_a" type="number" placeholder="e.g. 50 or -20"><br>
+  <div class="acts"><button class="btn" onclick="coinSave('${uid}')">Apply</button><button class="btn g" onclick="closeM()">Cancel</button></div>`);
+}
+async function coinSave(uid){
+  const k=$('#c_k').value,n=+$('#c_a').value;if(!n)return toast('Enter amount');
+  try{
+    const batch=writeBatch(db);
+    await userOps(batch,uid,{[k]:n},{t:'Admin adjustment',a:n});
+    await batch.commit();closeM();toast('Coins updated');
+  }catch(e){toast('Failed: '+errm(e))}
+}
+
+/* ---------- settings ---------- */
+async function saveSet(){
+  const s={promo:$('#s1').value.trim()||CFG.promo,minRedeem:Math.max(1,+$('#s2').value||50),auto:$('#s3').value==='1'};
+  try{await setDoc(doc(db,'settings','app'),s,{merge:true});toast('Settings saved')}
+  catch(e){toast('Failed: '+errm(e))}
+}
+
+Object.assign(window,{doLogin,logout,go,closeM,tForm,modeOpts,tSave,tDel,resForm,resSave,dpAct,rdAct,coinForm,coinSave,saveSet});
+</script>
+</body>
+</html>

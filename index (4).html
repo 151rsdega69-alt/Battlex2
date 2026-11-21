@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0a0a0a">
+<title>BattleX – Tournament App</title>
+<style>
+:root{--bg:#0a0a0a;--card:#141414;--card2:#1c1c1c;--line:#3a2f08;--gold:#ffc400;--gold2:#e0a400;--txt:#fff;--mut:#9a9a9a;--green:#22c55e;--red:#ef4444}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html,body{height:100%;background:#000;color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+#app{max-width:430px;height:100dvh;margin:0 auto;background:var(--bg);position:relative;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 0 0 1px #1a1a1a}
+#splash{position:absolute;inset:0;background:#000;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;transition:opacity .5s}
+.logo{width:92px;height:92px;border-radius:50%;border:3px solid var(--gold);display:grid;place-items:center;font-weight:900;font-style:italic;color:var(--gold);font-size:30px;background:radial-gradient(#2a2000,#000);box-shadow:0 0 30px #ffc40044}
+.bar{width:220px;height:4px;background:#222;border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--gold);animation:ld 1.6s forwards}
+@keyframes ld{to{width:100%}}
+.sp-t{letter-spacing:2px;font-size:13px;color:#ddd;font-weight:600}
+header{padding:12px 16px;display:flex;align-items:center;gap:10px;flex:none}
+header.sub{gap:14px}
+.av{width:38px;height:38px;border-radius:50%;border:2px solid var(--gold);display:grid;place-items:center;font-weight:900;font-size:12px;color:var(--gold);background:#1b1500;font-style:italic}
+.hn{line-height:1.15}.hn b{font-size:15px;display:block}.hn small{color:var(--gold);font-size:12px}
+.sp{flex:1}
+.pill{background:linear-gradient(135deg,#ffd633,#e6a800);color:#000;font-weight:800;border-radius:20px;padding:7px 13px;font-size:14px;display:flex;align-items:center;gap:6px}
+.ib{width:30px;height:30px;display:grid;place-items:center;color:var(--gold)}
+svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+main{flex:1;overflow-y:auto;padding:4px 16px 110px;scrollbar-width:none}
+main::-webkit-scrollbar{display:none}
+.promo{background:#151100;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;color:#e8d9a0}
+.banner{border-radius:16px;height:150px;padding:18px;position:relative;overflow:hidden;background:linear-gradient(135deg,#ffd000,#b87d00 70%,#7a5200);display:flex;flex-direction:column;justify-content:center;color:#000;margin-bottom:16px;border:1px solid #ffdf5a}
+.banner h1{font-size:30px;font-style:italic;font-weight:900;line-height:1}
+.banner p{font-size:13px;font-weight:700;margin-top:6px;opacity:.85}
+.banner:after{content:"";position:absolute;right:-30px;top:-30px;width:170px;height:170px;border-radius:50%;background:repeating-radial-gradient(#0002 0 6px,#0000 6px 14px)}
+.qa{display:flex;justify-content:space-around;margin-bottom:20px}
+.qa button{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:#ccc}
+.qa .c{width:54px;height:54px;border-radius:50%;border:2px solid var(--gold);display:grid;place-items:center;color:var(--gold);background:#120e00}
+.sec{display:flex;justify-content:space-between;align-items:center;margin:6px 0 12px}
+.sec b{font-size:17px;display:block}.sec small{color:var(--mut);font-size:12px}
+.live{background:var(--gold);color:#000;font-weight:800;font-size:11px;padding:5px 10px;border-radius:14px}
+.games{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px}
+.g{height:190px;border-radius:16px;position:relative;overflow:hidden;text-align:left;padding:14px;display:flex;flex-direction:column;justify-content:flex-end;border:1px solid #333}
+.g.a{background:linear-gradient(160deg,#ff9d00 0%,#ff5a00 45%,#2a0a00 100%)}
+.g.b{background:linear-gradient(160deg,#3aa0ff 0%,#1f4e9a 50%,#0b1226 100%)}
+.g h3{font-size:24px;font-weight:900;font-style:italic;line-height:1;text-shadow:0 2px 8px #0008}
+.g small{font-size:11px;opacity:.9;margin:4px 0 10px;display:block;font-weight:600}
+.g .tag{position:absolute;top:10px;left:10px;background:#000a;border-radius:8px;font-size:10px;padding:3px 7px;font-weight:700}
+.g .play{align-self:flex-end;background:var(--gold);color:#000;font-weight:800;font-size:12px;padding:6px 12px;border-radius:8px}
+.empty{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px 18px;text-align:center}
+.empty svg{width:34px;height:34px;color:var(--gold);margin-bottom:10px}
+.empty b{display:block;font-size:17px;margin-bottom:6px}.empty p{color:var(--mut);font-size:14px}
+nav{position:absolute;bottom:0;left:0;right:0;height:68px;background:#0d0d0d;border-top:1px solid #1d1d1d;display:flex;justify-content:space-around;align-items:center;z-index:5;padding-bottom:env(safe-area-inset-bottom)}
+nav button{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:#8a8a8a;width:64px}
+nav button.on{color:var(--gold)}
+nav .home{width:54px;height:54px;border-radius:50%;background:var(--gold);color:#000;display:grid;place-items:center;margin-top:-34px;border:5px solid var(--bg);box-shadow:0 0 0 1px #3a2f08}
+nav .home svg{width:24px;height:24px}
+.modes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.m{border-radius:12px;height:130px;position:relative;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;border:1px solid #333}
+.m span{background:var(--gold);color:#000;font-size:11px;font-weight:800;width:100%;text-align:center;padding:6px 2px}
+.m:nth-child(1){background:linear-gradient(160deg,#ff8a00,#5a1500)}
+.m:nth-child(2){background:linear-gradient(160deg,#4cc3ff,#12295a)}
+.m:nth-child(3){background:linear-gradient(160deg,#ff4d6d,#3d0a1c)}
+.m:nth-child(4){background:linear-gradient(160deg,#9bff4d,#133d0a)}
+.m:nth-child(5){background:linear-gradient(160deg,#c084fc,#2a0a4d)}
+.m:nth-child(6){background:linear-gradient(160deg,#ffd000,#4d3500)}
+.tabs{display:flex;background:var(--card);border-radius:12px;padding:4px;margin-bottom:14px}
+.tabs button{flex:1;padding:9px 0;border-radius:9px;font-size:13px;font-weight:600;color:#999}
+.tabs button.on{background:var(--gold);color:#000}
+.t{background:var(--card);border:1px solid #262626;border-radius:14px;padding:14px;margin-bottom:12px}
+.t .r1{display:flex;justify-content:space-between;align-items:center}
+.t h4{font-size:15px}.t .sub{color:var(--mut);font-size:12px;margin-top:3px}
+.badge{font-size:10px;font-weight:800;padding:3px 8px;border-radius:10px;background:#2a2200;color:var(--gold)}
+.badge.l{background:#3a0d0d;color:#ff6b6b}.badge.f{background:#0d2e18;color:var(--green)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.stats div{background:#0f0f0f;border-radius:10px;padding:8px;text-align:center}
+.stats small{color:var(--mut);font-size:10px;display:block;text-transform:uppercase;letter-spacing:.5px}.stats b{font-size:14px}
+.prog{height:5px;background:#262626;border-radius:4px;overflow:hidden;margin-bottom:12px}.prog i{display:block;height:100%;background:var(--gold)}
+.btn{background:linear-gradient(135deg,#ffd633,#e0a400);color:#000;font-weight:800;border-radius:10px;padding:11px 16px;font-size:14px;text-align:center;display:block;width:100%}
+.btn.g2{background:var(--green);color:#fff}.btn.ghost{background:#222;color:#fff}.btn[disabled]{opacity:.45}
+.room{background:#0f1a0f;border:1px dashed var(--green);border-radius:10px;padding:10px;font-size:13px;margin-bottom:10px;display:flex;justify-content:space-between}
+.card{background:#171200;border:1.5px solid var(--gold);border-radius:16px;padding:18px;margin-bottom:14px}
+.card h5{font-size:12px;letter-spacing:1px;border-left:3px solid var(--gold);padding-left:8px;display:flex;justify-content:space-between}
+.card h5 a{color:#ddd;font-weight:500;text-decoration:underline;cursor:pointer}
+.bal{font-size:40px;font-weight:800;margin:14px 0;display:flex;align-items:center;gap:10px}
+.coin{display:inline-grid;place-items:center;width:1em;height:1em;border-radius:50%;background:radial-gradient(#ffe066,#d99a00);color:#6b4a00;font-size:.6em;font-weight:900;flex:none}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.deals{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+.deal{flex:none;width:130px;background:var(--card);border:1px solid #2a2a2a;border-radius:14px;padding:12px;text-align:center;position:relative}
+.deal b{display:block;margin:8px 0 4px}.deal em{font-style:normal;font-size:11px;color:var(--green);background:#0d2e18;padding:2px 6px;border-radius:5px;display:inline-block;margin-bottom:8px}
+.deal .best{position:absolute;top:0;right:0;background:var(--gold);color:#000;font-size:9px;font-weight:800;padding:3px 7px;border-radius:0 13px 0 8px}
+.row{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid #262626;border-radius:14px;padding:14px;margin-bottom:10px;width:100%;text-align:left}
+.row .ic{width:42px;height:42px;border-radius:10px;background:#1d1700;display:grid;place-items:center;color:var(--gold);flex:none}
+.row .tx{flex:1}.row b{font-size:15px;display:block}.row small{color:var(--mut);font-size:12px}
+.row .gr{color:var(--green);font-size:12px;font-weight:700;display:block;margin:2px 0}
+.row .pr{background:linear-gradient(135deg,#ffd633,#e0a400);color:#000;font-weight:800;padding:9px 12px;border-radius:9px;font-size:13px}
+.lab{font-size:12px;letter-spacing:1.5px;color:#888;font-weight:700;margin:6px 0 12px}
+.prof{text-align:center;background:linear-gradient(#241c00,#161200);border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:14px}
+.prof .logo{margin:0 auto 12px;width:84px;height:84px}
+.prof h2{display:flex;justify-content:center;align-items:center;gap:6px}.prof p{color:var(--gold);font-weight:700;margin-top:6px;font-size:14px}
+.pstats{display:flex;justify-content:space-around;margin:18px 0;text-align:center}.pstats b{font-size:20px;display:block}.pstats small{color:var(--mut)}
+.lb{display:flex;align-items:center;gap:12px;padding:12px;background:var(--card);border-radius:12px;margin-bottom:8px;border:1px solid #222}
+.lb.me{border-color:var(--gold);background:#1a1500}
+.lb .n{width:28px;font-weight:800;color:var(--gold);text-align:center}.lb .nm{flex:1;font-weight:600}.lb .v{font-weight:800;font-size:14px}
+.hist{display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid #1d1d1d}
+.hist small{color:var(--mut);font-size:11px;display:block;margin-top:3px}.pos{color:var(--green)}.neg{color:var(--red)}
+#ov{position:absolute;inset:0;background:#000b;z-index:20;display:none;align-items:flex-end}
+#ov.show{display:flex}
+#sheet{width:100%;background:#121212;border-radius:22px 22px 0 0;padding:20px 18px 26px;border-top:1px solid var(--line);max-height:86%;overflow:auto;animation:up .25s}
+@keyframes up{from{transform:translateY(40px);opacity:0}}
+#sheet h3{margin-bottom:4px}.kv{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #222;font-size:14px}.kv span{color:var(--mut)}
+#toast{position:absolute;left:50%;top:70px;transform:translate(-50%,-20px);background:var(--gold);color:#000;font-weight:700;padding:10px 16px;border-radius:12px;font-size:13px;opacity:0;pointer-events:none;transition:.3s;z-index:60;max-width:86%;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+input.in{width:100%;background:#0d0d0d;border:1px solid #333;border-radius:10px;padding:12px;color:#fff;font:inherit;margin:8px 0 12px}
+.note{color:var(--mut);font-size:12px;margin:8px 0 14px}
+
+.spin{display:inline-block;width:15px;height:15px;border:3px solid rgba(0,0,0,.25);border-top-color:#000;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-3px;margin-right:8px}
+@keyframes sp{to{transform:rotate(360deg)}}
+#ast{min-height:20px;margin-top:10px;font-size:13px;text-align:center;color:var(--mut)}
+#ast.ok{color:var(--green);font-weight:700}#ast.er{color:var(--red)}
+
+.mt{display:flex;background:#1c1c1c;border-radius:10px;padding:3px;margin:0 0 10px}
+.mt span{flex:1;text-align:center;padding:8px;font-size:13px;font-weight:700;border-radius:8px;color:#9a9a9a;cursor:pointer}
+.mt span.on{background:var(--gold);color:#000}
+</style>
+<style>#auth{position:fixed;inset:0;z-index:9999;background:var(--bg,#0b0d14);display:flex;align-items:center;justify-content:center;padding:24px}#auth .ab{width:100%;max-width:340px;display:flex;flex-direction:column;gap:12px;align-items:stretch;text-align:center}#auth .logo{margin:0 auto}</style>
+</head>
+<body>
+<div id="app">
+  <div id="splash"><div class="logo">BX</div><div><div class="bar"><i></i></div><p class="sp-t" style="text-align:center;margin-top:20px">Loading Battleground...</p></div></div>
+  <div id="hd"></div>
+  <main id="mn"></main>
+  <nav id="nv"></nav>
+  <div id="ov" onclick="if(event.target===this)closeSheet()"><div id="sheet"></div></div>
+  <div id="toast"></div>
+</div>
+
+<script>
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const IC={
+ wallet:'<path d="M3 7a2 2 0 0 1 2-2h13v4"/><path d="M3 7v11a2 2 0 0 0 2 2h15V9H5a2 2 0 0 1-2-2z"/><circle cx="16" cy="14.5" r="1"/>',
+ gift:'<rect x="3" y="8" width="18" height="4"/><path d="M12 8v13M5 12v9h14v-9M8 8a2.5 2.5 0 1 1 4-2 2.5 2.5 0 1 1 4 2"/>',
+ clock:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/>',
+ help:'<path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/>',
+ pct:'<path d="M19 5 5 19"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/>',
+ rank:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+ user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+ home:'<path d="M3 11 12 3l9 8v10h-6v-6H9v6H3z"/>',
+ back:'<path d="M19 12H5M12 19l-7-7 7-7"/>',
+ plus:'<path d="M12 5v14M5 12h14"/>',
+ reload:'<path d="M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5"/>',
+ trophy:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H3v1a4 4 0 0 0 4 4M17 6h4v1a4 4 0 0 1-4 4"/>',
+ cash:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/>',
+ arrow:'<path d="m9 6 6 6-6 6"/>'
+};
+const ic=n=>`<svg viewBox="0 0 24 24">${IC[n]}</svg>`;
+const coin='<span class="coin">₿</span>';
+const f2=n=>Number(n).toFixed(2);
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('show'),2200)}
+function openSheet(h){$('#sheet').innerHTML=h;$('#ov').classList.add('show')}
+function closeSheet(){$('#ov').classList.remove('show')}
+function hash(s){let h=7;for(const c of s)h=(h*31+c.charCodeAt(0))>>>0;return h}
+
+/* ---------- state ---------- */
+const LS='battlex_v1';
+function defaults(){return{name:'Player',id:'0',dep:0,win:0,bonus:0,joined:{},settled:{},hist:[],matches:0,wins:0}}
+let S=defaults();
+const save=()=>{window.bxSave&&window.bxSave(S)};
+const total=()=>S.dep+S.win+S.bonus;
+function spend(a){let r=a;for(const k of['bonus','dep','win']){const x=Math.min(S[k],r);S[k]-=x;r-=x}}
+function log(t,a){S.hist.unshift({t,a,ts:Date.now()});S.hist=S.hist.slice(0,60)}
+
+/* ---------- data ---------- */
+const GAMES={
+ fire:{name:'Fire Arena',cls:'a',tag:'FairPlay : ON',modes:['Full Map','Headshot Only','Squad Clash','Lone Wolf']},
+ royale:{name:'Mobile Royale',cls:'b',tag:'FairPlay : ON',modes:['Classic Solo','Classic Duo','Team Deathmatch']}
+};
+const FEES=[10,20,0,30,50,25,15,40],SLOTS=[48,12,100,50,25,40];
+const NAMES=['ShadowX','NightWolf','BlazeKing','ViperOP','GhostRider','AceHunter','DarkFury','StormBreaker','RoyalFlush','NinjaPro','SniperRaj','TigerClaw'];
+const ADM=()=>Object.assign({},window.BXCFG||{},{custom:window.BXT||[]});
+const SLOT_MS=30*60*1000,LIVE_MS=25*60*1000;
+function tournaments(gk,mi){
+  const now=Date.now(),base=Math.floor(now/SLOT_MS)*SLOT_MS,out=[];
+  const ad=ADM();
+  for(let k=-3;k<=6&&ad.auto!==false;k++){
+    const start=base+k*SLOT_MS,id=`${gk}${mi}-${start}`,h=hash(id);
+    const fee=FEES[h%FEES.length],slots=SLOTS[h%SLOTS.length];
+    const prize=fee?Math.round(fee*slots*.8/10)*10:50;
+    const status=now<start?'up':now<start+LIVE_MS?'live':'res';
+    const filled=status==='up'?Math.min(slots-1,Math.floor(slots*(.15+(h%60)/100))):slots;
+    out.push({id,gk,mi,start,fee,slots,prize,status,filled,title:`${GAMES[gk].modes[mi]} #${(start/SLOT_MS%1000|0)}`,h});
+  }
+  (ad.custom||[]).filter(c=>c.gk===gk&&c.mi===mi).forEach(c=>out.push(Object.assign({},c,{status:now<c.start?'up':now<c.start+LIVE_MS?'live':'res',h:hash(c.id)})));
+  return out.sort((a,b)=>a.start-b.start);
+}
+function winners(t){return t.res||[0,1,2].map(i=>NAMES[(t.h+i*5)%NAMES.length])}
+function allJoinedTs(){const r=[];for(const gk in GAMES)GAMES[gk].modes.forEach((_,mi)=>tournaments(gk,mi).forEach(t=>{if(S.joined[t.id])r.push(t)}));return r}
+function settle(){}
+
+/* ---------- views ---------- */
+let V={n:'home',a:null},stack=[];
+function go(n,a,push){if(push!==false)stack.push(V);V={n,a};render();$('#mn').scrollTop=0}
+function back(){V=stack.pop()||{n:'home'};render()}
+function tab(n){stack=[];V={n};render()}
+
+function header(){
+  const sub={game:()=>GAMES[V.a].name.toUpperCase(),modes:()=>'',buy:()=>'Purchase Coins',hist:()=>'Transaction History',lb:()=>'Leaderboard'}[V.n];
+  if(sub&&V.n!=='modes')return `<header class="sub"><button class="ib" onclick="back()">${ic('back')}</button><b style="font-size:17px">${sub()}</b></header>`;
+  if(V.n==='modes')return `<header class="sub"><button class="ib" onclick="back()">${ic('back')}</button><b style="font-size:17px">${V.a.name.toUpperCase()}</b></header>`;
+  return `<header><div class="av">BX</div><div class="hn"><b onclick="rename()">${S.name}</b><small>BattleX</small></div><div class="sp"></div><button class="ib" onclick="support()">${ic('help')}</button><button class="pill" onclick="tab('wallet')">${ic('wallet').replace('<svg','<svg style="width:16px;height:16px"')}${f2(total())} | +</button></header>`;
+}
+function navbar(){
+  const t=(k,l,i)=>`<button class="${V.n===k?'on':''}" onclick="tab('${k}')">${ic(i)}${l}</button>`;
+  return t('offers','Offers','pct')+t('rank','Rank','rank')+`<button class="home" onclick="tab('home')">${ic('home')}</button>`+t('wallet','Wallet','wallet')+t('profile','Profile','user');
+}
+
+const vHome=()=>{
+  const j=allJoinedTs().filter(t=>t.status!=='res').sort((a,b)=>a.start-b.start);
+  return `
+  <div class="promo" onclick="go('buy')"><span>📢 ${ADM().promo||'ADD ₹200 GET 250 COIN'}</span>${ic('arrow').replace('<svg','<svg style="width:16px;height:16px"')}</div>
+  <div class="banner"><h1>WELCOME TO<br>BattleX</h1><p>Play Tournaments & Win Coins!</p></div>
+  <div class="qa">
+    <button onclick="tab('wallet')"><span class="c">${ic('wallet')}</span>Wallet</button>
+    <button onclick="go('lb')"><span class="c">${ic('trophy')}</span>Leaderboard</button>
+    <button onclick="go('hist')"><span class="c">${ic('clock')}</span>History</button>
+    <button onclick="support()"><span class="c">${ic('help')}</span>Support</button>
+  </div>
+  <div class="sec"><div><b>Esports Games</b><small>Big winnings for all</small></div><span class="live">● LIVE</span></div>
+  <div class="games">${Object.entries(GAMES).map(([k,g])=>`<button class="g ${g.cls}" onclick="go('game','${k}')"><span class="tag">● ${g.tag}</span><h3>${g.name.split(' ').join('<br>')}</h3><small>${g.modes.length} modes</small><span class="play">PLAY ▸</span></button>`).join('')}</div>
+  <div class="sec"><div><b>My Contests</b><small>Your latest tournaments</small></div><button class="ib" onclick="render();toast('Refreshed')">${ic('reload')}</button></div>
+  ${j.length?j.map(t=>tCard(t,true)).join(''):`<div class="empty">${ic('clock')}<b>You haven't joined any match yet</b><p>Join your first tournament from the lobby</p></div>`}`;
+};
+const vGame=()=>{const g=GAMES[V.a];return `<div class="modes">${g.modes.map((m,i)=>`<button class="m" onclick="go('modes',{gk:'${V.a}',mi:${i},name:'${m}',st:'up'})"><span>${m.toUpperCase()}</span></button>`).join('')}</div>`};
+const vModes=()=>{
+  const {gk,mi,st}=V.a;const l=tournaments(gk,mi).filter(t=>t.status===st);
+  if(st==='res')l.reverse();
+  return `<div class="tabs">${[['live','Live'],['up','Upcoming'],['res','Result']].map(([k,n])=>`<button class="${st===k?'on':''}" onclick="V.a.st='${k}';render()">${n}</button>`).join('')}</div>`+
+  (l.length?l.map(t=>tCard(t)).join(''):`<div class="empty" style="margin-top:50px">${ic('clock')}<b>No ${st==='live'?'live':st==='up'?'upcoming':'finished'} matches</b><p>New tournaments will be listed soon.</p></div>`);
+};
+function tCard(t,mini){
+  const joined=S.joined[t.id],pct=Math.round(t.filled/t.slots*100);
+  const badge=t.status==='live'?'<span class="badge l">● LIVE</span>':t.status==='up'?`<span class="badge">⏱ <span data-cd="${t.start}"></span></span>`:'<span class="badge f">FINISHED</span>';
+  let body='';
+  if(t.status==='res'){const w=winners(t);body=`<div class="sub" style="margin:10px 0">🥇 ${w[0]} · 🥈 ${w[1]} · 🥉 ${w[2]}</div>`+(joined?`<div class="sub pos">You played this match</div>`:'')}
+  else{
+    body=`<div class="stats"><div><small>Entry</small><b>${t.fee?t.fee+' coins':'FREE'}</b></div><div><small>Prize</small><b>${t.prize}</b></div><div><small>Slots</small><b>${t.filled}/${t.slots}</b></div></div><div class="prog"><i style="width:${pct}%"></i></div>`;
+    if(joined&&(t.status==='live'||t.start-Date.now()<15*60000))body+=`<div class="room"><span>Room ID: <b>${t.room||1000+t.h%9000}</b></span><span>Pass: <b>${t.pass||(t.h%99999).toString(36).toUpperCase()}</b></span></div>`;
+    body+=joined?`<button class="btn ghost" disabled>✓ Joined</button>`:t.status==='live'?`<button class="btn ghost" disabled>Registration closed</button>`:`<button class="btn" onclick="joinSheet('${t.id}')">JOIN · ${t.fee?t.fee+' COINS':'FREE'}</button>`;
+  }
+  return `<div class="t"><div class="r1"><div><h4>${mini?GAMES[t.gk].name+' · ':''}${t.title}</h4><div class="sub">${new Date(t.start).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} · ${t.slots} players</div></div>${badge}</div>${body}</div>`;
+}
+const find=id=>{for(const gk in GAMES)for(let mi=0;mi<GAMES[gk].modes.length;mi++){const t=tournaments(gk,mi).find(x=>x.id===id);if(t)return t}};
+function joinSheet(id){
+  const t=find(id);
+  openSheet(`<h3>Join ${t.title}</h3><p class="note">${GAMES[t.gk].name} · ${GAMES[t.gk].modes[t.mi]}</p>
+  <div class="kv"><span>Entry fee</span><b>${t.fee} coins</b></div><div class="kv"><span>Prize pool</span><b>${t.prize} coins</b></div>
+  <div class="kv"><span>Your balance</span><b>${f2(total())}</b></div><div class="kv"><span>After joining</span><b>${f2(total()-t.fee)}</b></div><br>
+  ${total()>=t.fee?`<button class="btn" onclick="doJoin('${id}')">CONFIRM</button>`:`<p class="note neg">Not enough coins.</p><button class="btn" onclick="closeSheet();go('buy')">ADD COINS</button>`}`);
+}
+function doJoin(id){const t=find(id);if(total()<t.fee)return;spend(t.fee);S.joined[id]=1;if(t.fee)log('Joined '+t.title,-t.fee);save();closeSheet();toast('Joined! Room ID shows 15 min before start');render()}
+
+const vWallet=()=>`
+  <div class="card"><h5>ACCOUNT STATS <a onclick="go('hist')">HISTORY</a></h5><div class="bal">${coin}${Math.floor(total())}</div>
+  <div class="two"><button class="btn g2" onclick="go('buy')">＋ ADD</button><button class="btn" onclick="redeemSheet()">REDEEM</button></div></div>
+  <div class="stats" style="grid-template-columns:repeat(3,1fr)">
+    <div style="background:var(--card);padding:14px"><small>Deposited</small>${coin}<br><b>${S.dep}</b></div>
+    <div style="background:var(--card);padding:14px"><small>Winning</small>${coin}<br><b>${S.win}</b></div>
+    <div style="background:var(--card);padding:14px"><small>Bonus</small>${coin}<br><b>${S.bonus}</b></div></div>
+  <p class="note" style="margin-top:-2px">Only winnings can be redeemed.</p>
+  <div class="sec"><div><b>Top-up Deals</b><small>Best offers for you</small></div></div>
+  <div class="deals">${[[110,'+10 Extra',100],[250,'+50 Extra',200],[500,'+120 Extra',380]].map(d=>`<div class="deal"><span class="best">BEST</span>${coin}<b>${d[0]} COINS</b><em>${d[1]}</em><button class="btn" onclick="buy(${d[0]},${d[2]})">₹${d[2]}</button></div>`).join('')}</div>`;
+const PACKS=[['Coin Pack',25,25],['Starter',10,10],['Basic',20,20],['Value',40,40],['Plus',50,50],['Popular',100,110],['Mega',200,250]];
+const vBuy=()=>`<div class="lab">OFFERS</div>`+PACKS.map(p=>`<button class="row" onclick="buy(${p[2]},${p[1]})"><span class="ic">${ic('cash')}</span><span class="tx"><b>${p[0]}</b><span class="gr">${p[1]} INR = ${p[2]} COINS</span><small>[ Demo – no real payment ]</small></span><span class="pr">${p[1]} INR</span></button>`).join('');
+const UPI='YOUR-UPI-ID@bank'; // TODO: put your payment UPI ID here
+function buy(c,inr){openSheet(`<h3>Add ${c} coins</h3><p class="note">Pay ₹${inr} to UPI: <b>${UPI}</b>, then enter the UTR / transaction ID. Coins are added after admin approval.</p><input class="in" id="utr" placeholder="UTR / Transaction ID"><button class="btn" onclick="doBuy(${c},${inr})">SUBMIT REQUEST</button>`)}
+async function doBuy(c,inr){const u=$('#utr').value.trim();if(u.length<6)return toast('Enter valid UTR');try{await bxReq('deposits',{coins:c,inr,utr:u});closeSheet();toast('Request sent. Coins arrive after admin approval')}catch(e){toast('Failed: '+(e.code||''))}}
+function redeemSheet(){openSheet(`<h3>Redeem winnings</h3><p class="note">Available: ${S.win} coins · Minimum ${ADM().minRedeem||50} · demo only</p><input class="in" id="rd" type="number" placeholder="Coins to redeem"><input class="in" id="upi" placeholder="UPI ID"><button class="btn" onclick="doRedeem()">REQUEST REDEEM</button>`)}
+async function doRedeem(){const a=+$('#rd').value,upi=$('#upi').value.trim();if(!upi.includes('@'))return toast('Enter valid UPI ID');const mn=ADM().minRedeem||50;if(!(a>=mn))return toast('Minimum '+mn+' coins');if(a>S.win)return toast('Only winnings can be redeemed');try{await bxReq('redeems',{upi,amt:a});closeSheet();toast('Redeem request sent. Admin will review it')}catch(e){toast('Failed: '+(e.code||''))}}
+
+const vProfile=()=>`
+  <div class="prof"><div class="logo">BX</div><h2>${S.name} <span style="color:#3b9cff">✔</span></h2><p>ID: ${S.id}</p><button class="note" style="text-decoration:underline" onclick="rename()">Edit name</button></div>
+  <div class="pstats"><div><b>${S.matches}</b><small>Matches</small></div><div><b>${S.wins}</b><small>Wins</small></div><div><b>${S.matches?Math.round(S.wins/S.matches*100):0}%</b><small>Win %</small></div></div>
+  <button class="row" onclick="tab('wallet')"><span class="tx"><small>Wallet Coins</small><b style="font-size:24px;margin-top:6px;display:flex;gap:8px;align-items:center">${coin}${Math.floor(total())}</b><small>Tap to add coins or redeem</small></span>${ic('arrow')}</button>
+  <div class="lab" style="margin-top:18px;font-size:15px;color:#fff">Account</div>
+  <button class="row" onclick="go('hist')"><span class="ic">${ic('clock')}</span><span class="tx"><b>Transaction History</b></span>${ic('arrow')}</button>
+  <button class="row" onclick="go('lb')"><span class="ic">${ic('rank')}</span><span class="tx"><b>Leaderboard</b></span>${ic('arrow')}</button>
+  <button class="row" onclick="support()"><span class="ic">${ic('help')}</span><span class="tx"><b>Help & Support</b></span>${ic('arrow')}</button>
+  <button class="row" onclick="bxLogout()"><span class="ic">${ic('reload')}</span><span class="tx"><b>Logout</b></span></button>`;
+const vHist=()=>S.hist.length?S.hist.map(h=>`<div class="hist"><div>${h.t}<small>${new Date(h.ts).toLocaleString([],{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</small></div><b class="${h.a>=0?'pos':'neg'}">${h.a>=0?'+':''}${h.a}</b></div>`).join(''):'<div class="empty">No transactions yet</div>';
+function board(){
+  const base=NAMES.map((n,i)=>({n,v:Math.round(2400-i*170+(hash(n)%90))}));
+  base.push({n:S.name,v:S.win*20+S.wins*100,me:1});return base.sort((a,b)=>b.v-a.v);
+}
+const vRank=()=>`<div class="lab">TOP PLAYERS · POINTS</div>`+board().map((p,i)=>`<div class="lb ${p.me?'me':''}"><span class="n">${i<3?['🥇','🥈','🥉'][i]:i+1}</span><span class="nm">${p.n}${p.me?' (You)':''}</span><span class="v">${p.v}</span></div>`).join('');
+const vOffers=()=>`<div class="lab">OFFERS</div>`+[['Add ₹100, get 110 coins','Best for new players',110,100],['Add ₹200, get 250 coins','+50 extra coins',250,200],['Daily bonus','Claim 2 free coins once a day',0,0]].map((o,i)=>`<button class="row" onclick="${i<2?`buy(${o[2]},${o[3]})`:'daily()'}"><span class="ic">${ic('gift')}</span><span class="tx"><b>${o[0]}</b><small>${o[1]}</small></span><span class="pr">${i<2?'₹'+o[3]:'CLAIM'}</span></button>`).join('');
+function daily(){toast('Daily bonus coming soon')}
+function support(){openSheet('<h3>Help & Support</h3><p class="note">Replace this with your WhatsApp / Telegram / email support link.</p><button class="btn" onclick="closeSheet()">OK</button>')}
+function rename(){const n=prompt('Your name',S.name);if(n&&n.trim()){S.name=n.trim().slice(0,14);save();render()}}
+
+const VIEWS={home:vHome,game:vGame,modes:vModes,wallet:vWallet,buy:vBuy,profile:vProfile,hist:vHist,rank:vRank,lb:vRank,offers:vOffers};
+function render(){
+  $('#hd').innerHTML=header();
+  $('#mn').innerHTML=VIEWS[V.n]();
+  $('#nv').innerHTML=navbar();
+  $('#nv').style.display=['home','wallet','rank','offers','profile'].includes(V.n)?'flex':'none';
+  tick();
+}
+function tick(){
+  document.querySelectorAll('[data-cd]').forEach(e=>{
+    let s=Math.max(0,Math.floor((+e.dataset.cd-Date.now())/1000));
+    const h=Math.floor(s/3600),m=Math.floor(s%3600/60);s%=60;
+    e.textContent=(h?h+'h ':'')+String(m).padStart(2,'0')+'m '+String(s).padStart(2,'0')+'s';
+  });
+}
+setInterval(tick,1000);
+let lastSt='';setInterval(()=>{ // refresh when a match changes state
+  const k=Math.floor(Date.now()/60000);if(k!==lastSt){lastSt=k;settle();if(['modes','home'].includes(V.n)&&!$('#ov').classList.contains('show'))render()}},5000);
+setTimeout(()=>{$('#splash').style.opacity=0;setTimeout(()=>$('#splash').remove(),500)},1800);
+window.bxStart=()=>render();
+</script>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,doc,setDoc,updateDoc,addDoc,collection,onSnapshot,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const app=initializeApp({apiKey:"AIzaSyCpSOaNIW3M8cVEjcm9n7JfmWvQlsoy9R8",authDomain:"battlex-c542a.firebaseapp.com",projectId:"battlex-c542a",storageBucket:"battlex-c542a.firebasestorage.app",messagingSenderId:"111353356306",appId:"1:111353356306:web:b6691b01407362da9038cb"});
+const auth=getAuth(app),db=getFirestore(app);
+const box=document.createElement('div');box.id='auth';
+box.innerHTML='<div class="ab"><div class="logo">BX</div><h2 id="at">Sign up</h2><input class="in" id="an" placeholder="Full name" autocomplete="name"><input class="in" id="au" placeholder="Username" autocapitalize="none" autocomplete="username"><input class="in" id="aph" type="tel" inputmode="numeric" placeholder="Phone number (10 digits)" autocomplete="tel"><input class="in" id="ae" type="email" placeholder="Email" autocapitalize="none" autocomplete="email"><input class="in" id="ap" type="password" placeholder="Password (min 6)"><button class="btn" id="ago">CREATE ACCOUNT</button><p id="ast"></p><p class="note" id="asw" style="text-decoration:underline;cursor:pointer">Have an account? Login</p></div>';
+document.body.appendChild(box);
+const q=s=>box.querySelector(s);let mode='signup',uid=null,unsub=null,unsubT=null,unsubC=null;
+const btn=q('#ago'),st=q('#ast');
+const setSt=(t,c)=>{st.textContent=t;st.className=c||''};
+const label=()=>mode==='login'?'LOGIN':'CREATE ACCOUNT';
+const setLoad=(on,txt)=>{btn.disabled=on;btn.innerHTML=on?'<span class="spin"></span>'+txt:label()};
+const withTimeout=(pr,ms)=>Promise.race([pr,new Promise((_,rj)=>setTimeout(()=>rj({code:'timeout - check internet / Firestore'}),ms))]);
+const layout=()=>{
+  const su=mode==='signup';
+  q('#at').textContent=su?'Sign up':'Login';
+  btn.textContent=label();
+  ['#an','#au','#aph'].forEach(i=>q(i).style.display=su?'block':'none');
+  q('#asw').textContent=su?'Have an account? Login':'New here? Sign up';
+  setSt('');
+};
+q('#asw').onclick=()=>{mode=mode==='login'?'signup':'login';layout()};
+q('#ago').onclick=async()=>{
+  if(btn.disabled)return;
+  setSt('');
+  const n=q('#an').value.trim(),u=q('#au').value.trim().toLowerCase(),ph=q('#aph').value.replace(/\D/g,''),e=q('#ae').value.trim().toLowerCase(),p=q('#ap').value;
+  const bad=m=>{toast(m);setSt(m,'er')};
+  const su=mode==='signup';
+  if(su){
+    if(n.length<2)return bad('Enter your full name');
+    if(!/^[a-z0-9_.]{3,14}$/.test(u))return bad('Username: 3-14 letters/numbers/_ only');
+    if(ph.length<10||ph.length>15)return bad('Enter a valid phone number');
+  }
+  if(!/^\S+@\S+\.\S+$/.test(e))return bad('Enter a valid email');
+  if(p.length<6)return bad('Password must be 6+ characters');
+  try{
+    if(!su){
+      setLoad(true,'Logging in...');setSt('Logging in...');
+      await withTimeout(signInWithEmailAndPassword(auth,e,p),20000);
+    }else{
+      setLoad(true,'Creating account...');setSt('Creating your account...');
+      const c=await withTimeout(createUserWithEmailAndPassword(auth,e,p),20000);
+      setSt('Saving your profile...');
+      await withTimeout(setDoc(doc(db,'users',c.user.uid),{name:u,fullName:n.slice(0,40),username:u,phone:ph,email:e,id:String(11000+Math.floor(Math.random()*90000)),dep:0,win:0,bonus:0,wins:0,matches:0,joined:{},settled:{},hist:[]}),20000);
+      setSt('Account created ✓ Opening app...','ok');
+    }
+  }catch(err){
+    let m=(err.code||'error').replace('auth/','').replace(/-/g,' ');
+    if(/email already in use/.test(m))m='This email is already registered. Please login';
+    else if(/invalid credential|wrong password|user not found|invalid login/.test(m))m='Wrong email or password';
+    bad(m);setLoad(false);
+  }
+};
+layout();
+onAuthStateChanged(auth,u=>{
+  if(unsub){unsub();unsub=null}
+  if(unsubT){unsubT();unsubT=null}
+  if(unsubC){unsubC();unsubC=null}
+  if(!u){uid=null;box.style.display='flex';return}
+  uid=u.uid;
+  const soft=()=>{const sh=document.querySelector('#ov');if(!sh||!sh.classList.contains('show'))window.bxStart()};
+  unsubT=onSnapshot(collection(db,'tournaments'),s=>{window.BXT=s.docs.map(d=>({...d.data(),id:d.id}));soft()},()=>{});
+  unsubC=onSnapshot(doc(db,'settings','app'),s=>{window.BXCFG=s.data()||{};soft()},()=>{});
+  unsub=onSnapshot(doc(db,'users',uid),s=>{
+    if(!s.exists())return;const d=s.data();
+    Object.assign(S,{name:d.name,id:d.id,dep:d.dep||0,win:d.win||0,bonus:d.bonus||0,wins:d.wins||0,matches:d.matches||0,joined:d.joined||{},settled:d.settled||{},hist:d.hist||[]});
+    box.style.display='none';setLoad(false);setSt('');window.bxStart();
+  },()=>toast('Could not load your data'));
+});
+window.bxSave=async s=>{if(!uid)return;try{await updateDoc(doc(db,'users',uid),{name:s.name,joined:s.joined,settled:s.settled,hist:s.hist,matches:s.matches,dep:s.dep,win:s.win,bonus:s.bonus})}catch(e){toast('Save failed: '+(e.code||''))}};
+window.bxReq=(col,data)=>addDoc(collection(db,col),Object.assign({},data,{uid,name:S.name,status:'pending',ts:serverTimestamp()}));
+window.bxLogout=()=>signOut(auth);
+</script>
+</body>
+</html>
